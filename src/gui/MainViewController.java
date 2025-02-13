@@ -45,7 +45,7 @@ import javafx.scene.layout.VBox;
 
 		@FXML
 		public void onMenuItemDepartmentAction() {
-			System.out.println("onMenuDepartmentAction");
+			loadView("/gui/DepartmentList.fxml");
 		}
 
 		@FXML
