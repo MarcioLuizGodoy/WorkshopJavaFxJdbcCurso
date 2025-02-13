@@ -4,6 +4,7 @@
 	import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import application.Main;
 import gui.util.Alerts;
@@ -46,19 +47,24 @@ import model.services.DepartmentService;
 
 		@FXML
 		public void onMenuItemDepartmentAction() {
-			loadView2("/gui/DepartmentList.fxml");
+			loadView("/gui/DepartmentList.fxml", (DepartmentListController controller) -> {
+				controller.setDepartmentService(new DepartmentService());
+				controller.updateTableView();
+			});
 		}
 
 		@FXML
 		public void onMenuItemAboutAction() {
-			loadView("/gui/About.fxml");
+			loadView("/gui/About.fxml",  x->{}) ;{
+				
+			}
 		}
 		
 		@Override
 		public void initialize(URL url, ResourceBundle rb) {
 
 		}
-		private synchronized void loadView(String absolutname) {
+		private synchronized <T>void loadView(String absolutname, Consumer<T> initializingAction) {
 			try {
 			FXMLLoader loader = 
 					new FXMLLoader(getClass().getResource(absolutname));
@@ -71,6 +77,10 @@ import model.services.DepartmentService;
 				
 				mainVBox.getChildren().add(mianMenu);
 				mainVBox.getChildren().addAll(newVBox.getChildren());
+				
+			T controller = 	loader.getController();
+			initializingAction.accept(controller);
+				
 			}
 			catch (IOException e) {
 				Alerts.showAlert("IoException","Error no carregamento da pagina", e.getMessage(), AlertType.ERROR);
